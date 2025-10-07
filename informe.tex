@@ -1,0 +1,163 @@
+\UseRawInputEncoding
+\documentclass[a4paper,12pt]{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  breaklines=true,
+  showstringspaces=false,
+  captionpos=b
+}
+
+
+\title{\textbf{Informe Lab 2: POO en Python}}
+\author{Juan Ignacio Carrera Saavedra}
+\date{Octubre 2025 -- UCT}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introducción}
+
+La Programación Orientada a Objetos (POO) organiza el código en "objetos" que combinan atributos y metodos. En el siguiente informe se cubriran algunos de los conceptos fundamentales que este paradigma de programación ofrece.
+
+\section{Herencia}
+
+La herencia permite crear clases hijas como se les suele decir, que heredan atributos y métodos de clases padre, especializando su comportamiento.
+
+\begin{lstlisting}[caption={Herencia básica en Python}]
+class Vehiculo:
+    def transportar(self):
+        return "Transportando genericamente"
+
+class Auto(Vehiculo):
+    def transportar(self):
+        return "Rodando por la carretera"
+
+mi_auto = Auto()
+print(mi_auto.transportar())  # Salida: Rodando por la carretera
+\end{lstlisting}
+
+\textbf{Ventajas:}
+\begin{itemize}
+  \item Evita duplicación de código
+  \item Crea jerarquías lógicas
+  \item Facilita el mantenimiento
+\end{itemize}
+
+\section{Polimorfismo}
+
+El polimorfismo permite que diferentes clases respondan distinto ante los mismos metodos.
+
+\begin{lstlisting}[caption={Polimorfismo en acción}]
+class Pato:
+    def sonido(self): return "Cuac!"
+
+class Vaca:
+    def sonido(self): return "Muu!"
+
+animales = [Pato(), Vaca()]
+for animal in animales:
+    print(animal.sonido())
+\end{lstlisting}
+
+\textbf{Beneficio}: Nos ofrece una gran flexibilidad a la hora de tratar a los objetos.
+
+\section{Clases Abstractas}
+
+Las clases abstractas definen métodos que las subclases deben implementar, se usa como plantilla para otras subclases. Una clase abstracta no se puede instanciar directamente.
+
+\begin{lstlisting}[caption={Clase abstracta con implementación}]
+from abc import ABC, abstractmethod
+
+class Forma(ABC):
+    @abstractmethod
+    def area(self): pass
+
+class Circulo(Forma):
+    def __init__(self, radio):
+        self.radio = radio
+    def area(self):
+        return 3.1416 * self.radio ** 2
+
+c = Circulo(5)
+print(f"Area: {c.area()}")  # Area: 78.54
+\end{lstlisting}
+
+\textbf{Fórmula del círculo:}
+\[
+A = \pi r^2
+\]
+
+\section{Interfaces}
+
+Una interfaz es un contrato que define qué métodos debe implementar una clase, pero no cómo debe implementarlos. En Python se pueden usar con Protocol, o simulando una con ABC.
+
+\begin{lstlisting}[caption={Interfaz para servicios de pago}]
+from typing import Protocol
+
+class Pagable(Protocol):
+    def procesar_pago(self, monto: float) -> str: ...
+
+class TarjetaCredito:
+    def procesar_pago(self, monto: float) -> str:
+        return f"Pago de {monto} con tarjeta de credito"
+
+class PayPal:
+    def procesar_pago(self, monto: float) -> str:
+        return f"Pago de {monto} via PayPal"
+
+# Ambas clases cumplen con el protocolo Pagable
+metodos_pago: list[Pagable] = [TarjetaCredito(), PayPal()]
+
+for metodo in metodos_pago:
+    print(metodo.procesar_pago(150))
+\end{lstlisting}
+
+\section{Method Resolution Order (MRO)}
+
+El MRO es la manera en la que Python busca metodos y atributos en una jerarquia de herencia, sobretodo en herencia multiple.
+
+\begin{lstlisting}[caption={MRO resolviendo herencia múltiple}]
+class A:
+    def metodo(self): print("A")
+
+class B(A):
+    def metodo(self): print("B")
+
+class C(A):
+    def metodo(self): print("C")
+
+class D(B, C): pass
+
+d = D()
+d.metodo()  # Salida: B (porque B esta primero)
+\end{lstlisting}
+
+\textbf{Orden de búsqueda:}
+\[
+D \rightarrow B \rightarrow C \rightarrow A \rightarrow object
+\]
+
+\section{Conclusión}
+
+Los conceptos repasados en este informe crean en conjunto un paradigma de programación que permite crear codigo modular, reutilizable y escalable. La flexibilidad que permiten estos conceptos en su uso conforman una gran herramienta para aquellos que desean construir software robusto.
+
+Las posibilidades que nos abre al estudiar y practicar constantemente estos conceptos nos permite, en conclusión, ser mejores desarrolladores.
+
+\end{document}
